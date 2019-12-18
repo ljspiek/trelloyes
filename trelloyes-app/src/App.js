@@ -1,43 +1,78 @@
 import React from 'react';
 import './App.css';
 import List from './List';
+import { STORE } from './store';
 
-class App extends React.Component(props) {
+const newRandomCard = () => {
+  const id = Math.random().toString(36).substring(2, 4)
+    + Math.random().toString(36).substring(2, 4);
+  return {
+    id,
+    title: `Random Card ${id}`,
+    content: 'lorem ipsum',
+  }
+}
+
+function omit(obj, keyToOmit) {
+  return Object.entries(obj).reduce(
+    (newObj, [key, value]) =>
+        key === keyToOmit ? newObj : {...newObj, [key]: value},
+    {}
+  );
+}
+
+
+
+
+class App extends React.Component {
   state = {
+    store: STORE,
+  };
 
+  handleDeleteCard = (cardId) => {
+    console.log('delete ran', omit(this.state.store.allCards, cardId))
+    const removeCard = omit(this.state.store.allCards, cardId);
+    // const newLists = map over lists & then remove corresponding cardIDs filter
+    const newLists = this.state.store.lists.map(list => ({ ...list, cardIds: list.cardIds.filter(id => id !== cardId) }))
+    // const newStore = {allCards: removeCard, lists: newStore}
+    this.setState({store: {
+      lists: newLists, 
+      allCards: removeCard}
+    })
   }
- 
-  handleDeleteItem(){
-    console.log('deleting item')
-  }
-
-  handleAddRandomCard() {
-    console.log('adding random card')
-  }
- 
   
+  handleRandomCard = () => {
+    console.log('add random card ran')
+  }
+
   render() {
-      return (
+    // console.log(this.state);
+    return (
       <main className='App'>
         <header className='App-header'>
           <h1>Trelloyes!</h1>
         </header>
         <div className='App-list'>
-      
-        {props.store.lists.map(list => (
+       
+        {this.state.store.lists.map(list => (
           <List 
+          id = {list.id}
           key = {list.id}
           header = {list.header}
-          cards = {list.cardIds.map(id => props.store.allCards[id])}
+          cards = {list.cardIds.map(id => this.state.store.allCards[id])}
+          onDeleteCard = {this.handleDeleteCard}
+          onAddRandomCard = {this.handleRandomCard}
           />
-
+  
           
         ))}
         </div>
-      
-    
+       
+     
       </main>
     );
   }
+  
 }
 
+export default App;
