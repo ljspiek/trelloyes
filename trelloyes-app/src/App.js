@@ -7,7 +7,7 @@ const newRandomCard = () => {
   const id = Math.random().toString(36).substring(2, 4)
     + Math.random().toString(36).substring(2, 4);
   return {
-    id,
+    id: "",
     title: `Random Card ${id}`,
     content: 'lorem ipsum',
   }
@@ -41,12 +41,30 @@ class App extends React.Component {
     })
   }
   
-  handleRandomCard = () => {
+  handleRandomCard = (listId) => {
     console.log('add random card ran')
+    const addedCard = newRandomCard()
+    const newLists = this.state.store.lists.map(list => {
+      if(list.id === listId) {
+        return {
+          ...list,
+          cardIds: [...list.cardIds, addedCard.id]
+        };
+        return list;
+      }
+    })
+
+    this.setState({store: {
+      lists: newLists,
+      allCards: {
+        ...this.state.store.allCards, [addedCard.id]: addedCard
+      }
+    }})
+
   }
 
   render() {
-    // console.log(this.state);
+    console.log(this.state);
     return (
       <main className='App'>
         <header className='App-header'>
