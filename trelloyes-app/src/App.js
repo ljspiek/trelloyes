@@ -50,14 +50,16 @@ class App extends React.Component {
           ...list,
           cardIds: [...list.cardIds, addedCard.id]
         };
-        return list;
       }
+        return list;
     })
 
-    this.setState({store: {
-      lists: newLists,
-      allCards: {
-        ...this.state.store.allCards, [addedCard.id]: addedCard
+    this.setState({
+      store: {
+        lists: newLists,
+        allCards: {
+          ...this.state.store.allCards, 
+          [addedCard.id]: addedCard
       }
     }})
 
@@ -65,6 +67,7 @@ class App extends React.Component {
 
   render() {
     console.log(this.state);
+    const {store} = this.state
     return (
       <main className='App'>
         <header className='App-header'>
@@ -72,14 +75,14 @@ class App extends React.Component {
         </header>
         <div className='App-list'>
        
-        {this.state.store.lists.map(list => (
+        {store.lists.map(list => (
           <List 
-          id = {list.id}
-          key = {list.id}
-          header = {list.header}
-          cards = {list.cardIds.map(id => this.state.store.allCards[id])}
-          onDeleteCard = {this.handleDeleteCard}
-          onAddRandomCard = {this.handleRandomCard}
+            key = {list.id}
+            id = {list.id}
+            header = {list.header}
+            cards = {list.cardIds.map(id => this.state.store.allCards[id])}
+            onDeleteCard = {this.handleDeleteCard}
+            onAddRandomCard = {this.handleRandomCard}
           />
   
           
